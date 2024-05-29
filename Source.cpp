@@ -4,45 +4,64 @@
 #include <algorithm>
 
 int main() {
-    // 1. Чтение из файла целочисленного одномерного вектора
-    std::ifstream inputFile("input.txt");
+    std::ifstream file("input.txt");  // РћС‚РєСЂС‹РІР°РµРј С„Р°Р№Р» РґР»СЏ С‡С‚РµРЅРёСЏ
+    if (!file.is_open()) {
+        std::cerr << "Failed to open the file." << std::endl;
+        return 1;
+    }
+
     std::vector<int> vec;
     int num;
-    while (inputFile >> num) {
+
+    // Р§РёС‚Р°РµРј С†РµР»РѕС‡РёСЃР»РµРЅРЅС‹Р№ РѕРґРЅРѕРјРµСЂРЅС‹Р№ РІРµРєС‚РѕСЂ РёР· С„Р°Р№Р»Р°
+    while (file >> num) {
         vec.push_back(num);
     }
-    inputFile.close();
 
-    // 2. Реверсируем последовательность элементов вектора
+   // Р РµРІРµСЂСЃРёСЂСѓРµРј РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚СЊ СЌР»РµРјРµРЅС‚РѕРІ РІРµРєС‚РѕСЂР°
     std::reverse(vec.begin(), vec.end());
 
-    // 3. Находим минимальный элемент
-    int minElement = *std::min_element(vec.begin(), vec.end());
+    // РќР°С…РѕРґРёРј РјРёРЅРёРјР°Р»СЊРЅС‹Р№ СЌР»РµРјРµРЅС‚
+    int min_element = *std::min_element(vec.begin(), vec.end());
 
-    // 4. Удаляем четные элементы
+    // РЈРґР°Р»СЏРµРј РІСЃРµ С‡РµС‚РЅС‹Рµ СЌР»РµРјРµРЅС‚С‹ РёР· РІРµРєС‚РѕСЂР°
     vec.erase(std::remove_if(vec.begin(), vec.end(), [](int x) { return x % 2 == 0; }), vec.end());
 
-    // 5. Сортируем вектор в убывающей последовательности
-    std::sort(vec.rbegin(), vec.rend());
+     // РЎРѕСЂС‚РёСЂСѓРµРј РІРµРєС‚РѕСЂ РІ РІРѕР·СЂР°СЃС‚Р°СЋС‰РµР№ РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё
+    std::sort(vec.begin(), vec.end());
 
-    // 6. Вставляем произвольный элемент, не нарушая сортировку
-    int newElement = 100;
-    vec.insert(std::upper_bound(vec.begin(), vec.end(), newElement, std::greater<int>()), newElement);
+     // Р’СЃС‚Р°РІР»СЏРµРј РїСЂРѕРёР·РІРѕР»СЊРЅС‹Р№ СЌР»РµРјРµРЅС‚ (РЅР°РїСЂРёРјРµСЂ, 42) РІ РІРµРєС‚РѕСЂ, РЅРµ РЅР°СЂСѓС€Р°СЏ СЃРѕСЂС‚РёСЂРѕРІРєСѓ
+    vec.insert(std::upper_bound(vec.begin(), vec.end(), 42), 42);
 
-    // 7. Определяем индекс заданного элемента
-    int elementToFind = 50;
-    auto it = std::find(vec.begin(), vec.end(), elementToFind);
-    int index = std::distance(vec.begin(), it);
+    // РћРїСЂРµРґРµР»СЏРµРј РёРЅРґРµРєСЃ Р·Р°РґР°РЅРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р° (РЅР°РїСЂРёРјРµСЂ, СЌР»РµРјРµРЅС‚Р° СЃРѕ Р·РЅР°С‡РµРЅРёРµРј 42)
+    auto it = std::find(vec.begin(), vec.end(), 42);
+    int index = it != vec.end() ? std::distance(vec.begin(), it) : -1;
 
-    // 8. Удаляем дублированные элементы
+    // РЈРґР°Р»СЏРµРј РґСѓР±Р»РёСЂРѕРІР°РЅРЅС‹Рµ СЌР»РµРјРµРЅС‚С‹ РёР· РІРµРєС‚РѕСЂР°
     vec.erase(std::unique(vec.begin(), vec.end()), vec.end());
 
-    // Выводим результаты
+    // Р’С‹РІРѕРґРёРј СЂРµР·СѓР»СЊС‚Р°С‚С‹
+    std::cout << "Reversed vector:";
     for (int num : vec) {
-        std::cout << num << " ";
+        std::cout << " " << num;
     }
-    std::cout << "\nМинимальный элемент: " << minElement << "\n";
-    std::cout << "Индекс элемента " << elementToFind << ": " << index << "\n";
+    std::cout << std::endl;
 
+    std::cout << "Minimum element: " << min_element << std::endl;
+
+    std::cout << "Sorted vector:";
+    for (int num : vec) {
+        std::cout << " " << num;
+    }
+    std::cout << std::endl;
+
+    if (index != -1) {
+        std::cout << "Index of the element 42: " << index << std::endl;
+    }
+    else {
+        std::cout << "Element 42 not found in the vector." << std::endl;
+    }
+
+    file.close(); // Р—Р°РєСЂС‹РІР°РµРј С„Р°Р№Р»
     return 0;
 }
